@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/colors';
 import RecipeCard from '../../components/RecipeCard';
 import NoFavouritesFound from '../../components/NoFavouritesFound';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 const FavouritesScreen = () => {
   const { signOut}= useClerk();
@@ -17,7 +18,7 @@ const FavouritesScreen = () => {
   useEffect (()=> {
     const loadFavourites = async() => {
       try {
-        const response = await fetch(`${API_URL}/favourites/${user,id}`)
+        const response = await fetch(`${API_URL}/favourites/${user.id}`)
          if (!response.ok) throw new Error("Failed to fetch favorites");
 
          
@@ -44,9 +45,14 @@ const FavouritesScreen = () => {
     loadFavourites()
   },[user.id]);
 
-  const handleSignOut = async => {}
+  const handleSignOut = () => {
+    Alert.alert("Logout", "Are you sure you want to logout?", [
+      {text:"Cancel", style:"cancel"},
+      {text:"Logout", style:"destructive",onPress:signOut},
+    ])
+  }
 
-  if(loading) return <Text>loading favourites...</Text>
+  if(loading) return <LoadingSpinner message='Loading your favourites...'/>
 
   return (
     <View style={favouritesStyles.container}>
